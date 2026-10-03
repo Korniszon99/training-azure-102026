@@ -1,0 +1,1 @@
+# training-azure-102026
