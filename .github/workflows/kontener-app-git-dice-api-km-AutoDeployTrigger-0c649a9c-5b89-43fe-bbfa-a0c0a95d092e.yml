@@ -34,15 +34,16 @@ jobs:
       - name: Build and push container image to registry
         uses: azure/container-apps-deploy-action@v2
         with:
-          appSourcePath: ${{ github.workspace }}
+          appSourcePath: ${{ github.workspace }}/nodejs-microservices
+          dockerfilePath: /packages/gateway-api/Dockerfile
           _dockerfilePathKey_: _dockerfilePath_
           _targetLabelKey_: _targetLabel_
-          registryUrl: 
-          registryUsername: ${{ secrets.KONTENERAPPGITDICEAPIKM_REGISTRY_USERNAME }}
-          registryPassword: ${{ secrets.KONTENERAPPGITDICEAPIKM_REGISTRY_PASSWORD }}
+          registryUrl: kontenerkm.azurecr.io
+          registryUsername: ${{ secrets.KONTENERAPPGITGATEWAYAPI_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.KONTENERAPPGITGATEWAYAPI_REGISTRY_PASSWORD }}
           containerAppName: kontener-app-git-dice-api-km
           resourceGroup: szkolenie-KM
-          imageToBuild: default/[parameters('containerAppName')]:${{ github.sha }}
+          imageToBuild: kontenerkm.azurecr.io/dice-api:${{ github.sha }}
           _buildArgumentsKey_: |
             _buildArgumentsValues_
 
