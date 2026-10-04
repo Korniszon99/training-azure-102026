@@ -34,12 +34,13 @@ jobs:
       - name: Build and push container image to registry
         uses: azure/container-apps-deploy-action@v2
         with:
-          appSourcePath: ${{ github.workspace }}
+          appSourcePath: ${{ github.workspace }}/nodejs-microservices
+          dockerfilePath: packages/settings-api
           _dockerfilePathKey_: _dockerfilePath_
           _targetLabelKey_: _targetLabel_
-          registryUrl: 
-          registryUsername: ${{ secrets.KONTENERAPPGITSETTINGSAPI_REGISTRY_USERNAME }}
-          registryPassword: ${{ secrets.KONTENERAPPGITSETTINGSAPI_REGISTRY_PASSWORD }}
+          registryUrl: kontenerkm.azurecr.io
+          registryUsername: ${{ secrets.KONTENERAPPGITGATEWAYAPI_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.KONTENERAPPGITGATEWAYAPI_REGISTRY_PASSWORD }}
           containerAppName: kontener-app-git-settings-api
           resourceGroup: szkolenie-KM
           imageToBuild: default/[parameters('containerAppName')]:${{ github.sha }}
