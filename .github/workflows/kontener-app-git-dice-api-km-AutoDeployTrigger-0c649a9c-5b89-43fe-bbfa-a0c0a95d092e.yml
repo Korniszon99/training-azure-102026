@@ -35,7 +35,7 @@ jobs:
         uses: azure/container-apps-deploy-action@v2
         with:
           appSourcePath: ${{ github.workspace }}/nodejs-microservices
-          dockerfilePath: /packages/gateway-api/Dockerfile
+          dockerfilePath: /packages/dice-api/Dockerfile
           _dockerfilePathKey_: _dockerfilePath_
           _targetLabelKey_: _targetLabel_
           registryUrl: kontenerkm.azurecr.io
