@@ -1,0 +1,49 @@
+name: Trigger auto deployment for kontener-app-git-gateway-api
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ main ]
+    paths:
+    - '**'
+    - '.github/workflows/kontener-app-git-gateway-api-AutoDeployTrigger-00c4a00b-9887-4633-9b4d-78aa607f6bbc.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:      
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions: 
+      id-token: write #This is required for requesting the OIDC JWT Token
+      contents: read #Required when GH token is used to authenticate with private repo
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.KONTENERAPPGITGATEWAYAPI_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.KONTENERAPPGITGATEWAYAPI_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.KONTENERAPPGITGATEWAYAPI_AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }}/nodejs-microservices/packages/gateway-api
+          _dockerfilePathKey_: _dockerfilePath_
+          _targetLabelKey_: _targetLabel_
+          registryUrl: kontenerkm.azurecr.io
+          registryUsername: ${{ secrets.KONTENERAPPGITGATEWAYAPI_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.KONTENERAPPGITGATEWAYAPI_REGISTRY_PASSWORD }}
+          containerAppName: kontener-app-git-gateway-api
+          resourceGroup: szkolenie-KM
+          imageToBuild: kontenerkm.azurecr.io/kontener-app-git-gateway-api:${{ github.sha }}
+          _buildArgumentsKey_: |
+            _buildArgumentsValues_
+
+
