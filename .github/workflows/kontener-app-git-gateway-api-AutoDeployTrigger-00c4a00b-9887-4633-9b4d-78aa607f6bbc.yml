@@ -44,7 +44,8 @@ jobs:
           containerAppName: kontener-app-git-gateway-api
           resourceGroup: szkolenie-KM
           imageToBuild: kontenerkm.azurecr.io/gateway-api:${{ github.sha }}
-          _buildArgumentsKey_: |
-            _buildArgumentsValues_
+          environmentVariables: >
+            SETTINGS_API_URL=https://kontener-app-git-settings-api.happyriver-c3b70016.westus2.azurecontainerapps.io
+            DICE_API_URL=https://kontener-app-git-dice-api-km.happyriver-c3b70016.westus2.azurecontainerapps.io
 
 
