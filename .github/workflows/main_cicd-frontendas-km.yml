@@ -30,6 +30,7 @@ jobs:
         run: |
           cd nodejs-microservices
           npm install
+          cd packages/website
           npm run build 
     
 
