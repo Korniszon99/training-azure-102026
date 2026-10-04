@@ -1,0 +1,49 @@
+name: Trigger auto deployment for kontener-app-git-dice-api-km
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ main ]
+    paths:
+    - '**'
+    - '.github/workflows/kontener-app-git-dice-api-km-AutoDeployTrigger-0c649a9c-5b89-43fe-bbfa-a0c0a95d092e.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:      
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions: 
+      id-token: write #This is required for requesting the OIDC JWT Token
+      contents: read #Required when GH token is used to authenticate with private repo
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.KONTENERAPPGITDICEAPIKM_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.KONTENERAPPGITDICEAPIKM_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.KONTENERAPPGITDICEAPIKM_AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }}
+          _dockerfilePathKey_: _dockerfilePath_
+          _targetLabelKey_: _targetLabel_
+          registryUrl: 
+          registryUsername: ${{ secrets.KONTENERAPPGITDICEAPIKM_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.KONTENERAPPGITDICEAPIKM_REGISTRY_PASSWORD }}
+          containerAppName: kontener-app-git-dice-api-km
+          resourceGroup: szkolenie-KM
+          imageToBuild: default/[parameters('containerAppName')]:${{ github.sha }}
+          _buildArgumentsKey_: |
+            _buildArgumentsValues_
+
+
