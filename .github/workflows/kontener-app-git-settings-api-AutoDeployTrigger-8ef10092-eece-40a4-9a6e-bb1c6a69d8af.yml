@@ -35,7 +35,7 @@ jobs:
         uses: azure/container-apps-deploy-action@v2
         with:
           appSourcePath: ${{ github.workspace }}/nodejs-microservices
-          dockerfilePath: packages/settings-api
+          dockerfilePath: packages/settings-api/Dockerfile
           _dockerfilePathKey_: _dockerfilePath_
           _targetLabelKey_: _targetLabel_
           registryUrl: kontenerkm.azurecr.io
@@ -43,7 +43,7 @@ jobs:
           registryPassword: ${{ secrets.KONTENERAPPGITGATEWAYAPI_REGISTRY_PASSWORD }}
           containerAppName: kontener-app-git-settings-api
           resourceGroup: szkolenie-KM
-          imageToBuild: default/[parameters('containerAppName')]:${{ github.sha }}
+          imageToBuild: kontenerkm.azurecr.io/settings-api:${{ github.sha }}
           _buildArgumentsKey_: |
             _buildArgumentsValues_
 
