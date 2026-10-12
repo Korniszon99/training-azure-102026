@@ -1,0 +1,26 @@
+name: Training example checks
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  node:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: nodejs-microservices
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: nodejs-microservices/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npm run build --workspace=dice-api
+      - run: npm test --workspace=dice-api -- --runInBand
+      - run: npm test --workspace=settings-api
+      - run: npm run build --workspace=website
+      - run: npm audit --audit-level=high

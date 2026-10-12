@@ -1,52 +1,47 @@
-# Szkolenie Azure / DevOps — 10.2026
+# Azure / DevOps Training — October 2026
 
-Centralne repozytorium szkolenia Komisji Cyfryzacji SSPW poświęconego wdrażaniu prostej aplikacji Node.js do Azure z użyciem GitHub Actions.
+**Training material for deploying a small Node.js microservice application with GitHub Actions and Azure.**
 
-To repo **nie zawiera gotowego workflow deploymentowego**. Celem szkolenia jest samodzielne zbudowanie procesu CI/CD przez uczestników.
+NestJS · Express · Fastify · Vite · Docker · Cosmos DB · Azure · GitHub Actions
 
-## Jak pracujemy
+This repository combines organizer documentation, participant/archive templates and an example microservice application in `nodejs-microservices/`. Deployment workflow files are already present in `.github/workflows/`; their runtime credentials belong in GitHub/Azure configuration, not in source.
 
-Każdy uczestnik tworzy własne repozytorium w organizacji `kc-sspw`.
+## Local example
 
-Proponowana nazwa:
+```bash
+git clone https://github.com/Korniszon99/training-azure-102026.git
+cd training-azure-102026/nodejs-microservices
+npm ci
+docker compose up --build
+```
 
-`training-azure-102026-<github-login>`
+In another terminal run `npm run start --workspace=website`. The website uses Vite; Docker exposes settings, dice and gateway APIs on ports 4001, 4002 and 4003. Services use in-memory mock storage without `DATABASE_CONNECTION_STRING`; persistence requires a configured Cosmos DB connection. Docker deployment is separate from the static frontend build.
 
-Przykład:
+## Verification
 
-`training-azure-102026-korniszon99`
+```bash
+npm run build --workspace=dice-api
+npm test --workspace=dice-api -- --runInBand
+npm test --workspace=settings-api
+npm run build --workspace=website
+npm audit
+npm audit --omit=dev
+```
 
-Repozytoria uczestników mogą mieć prosty workflow:
+The updated dependency lock removes critical/high findings from the audited dependency tree. Remaining moderate findings in development tooling are recorded in [SECURITY.md](SECURITY.md); this does not imply a vulnerability-free application. The Fastify test command does not enforce a repository-wide coverage threshold.
 
-- praca bezpośrednio na `main`,
-- bez obowiązkowego code review,
-- bez obowiązkowych Pull Requestów,
-- nacisk na samodzielne tworzenie GitHub Actions,
-- żadnych prawdziwych sekretów w kodzie ani historii Git.
+## Training organization
 
-## Co przechowujemy tutaj
+- [participants/](participants/) — participant entries.
+- [archive/](archive/) — final training artifacts.
+- [organizer-checklist.md](organizer-checklist.md) — organizer checklist.
+- [templates/PARTICIPANT.md](templates/PARTICIPANT.md) — entry template.
+- [nodejs-microservices/](nodejs-microservices/) — application and upstream workshop material.
 
-To repo służy jako:
+Participants can use repositories named `training-azure-102026-<github-login>` in their chosen organization and record the final deployment, workflow and lessons learned here.
 
-- indeks repozytoriów uczestników,
-- miejsce na krótkie podsumowania wykonanych wdrożeń,
-- archiwum finalnych workflowów po zakończeniu szkolenia,
-- dokumentacja organizacyjna danej edycji.
+## Attribution and production scope
 
-Struktura:
+The microservice example retains the upstream author's attribution and MIT license in `nodejs-microservices/`; it should not be presented as an entirely original architecture. The training contribution is the organization, integration and deployment exercises.
 
-- [participants/](participants/) — wpisy uczestników,
-- [archive/](archive/) — finalne artefakty po szkoleniu,
-- [organizer-checklist.md](organizer-checklist.md) — checklista dla prowadzących.
-
-## Po szkoleniu
-
-Repozytorium uczestnika może zostać zarchiwizowane w GitHubie. W tym repo zachowujemy wtedy:
-
-- link do repozytorium,
-- krótki opis serwisu,
-- link lub opis docelowego wdrożenia,
-- finalny workflow GitHub Actions napisany przez uczestnika,
-- najważniejsze wnioski z ćwiczenia.
-
-Dzięki temu każda edycja szkolenia pozostaje samodzielnym, czytelnym archiwum.
+Mocks, demo identity handling and workshop defaults are not a production security model. Before reusing this stack, implement authentication/authorization, durable data storage, input validation, rate limits and a tested deployment configuration. This is a supporting DevOps/teaching project, not a lead CV/AI case study.

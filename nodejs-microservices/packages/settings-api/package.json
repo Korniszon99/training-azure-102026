@@ -8,7 +8,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "tap \"test/**/*.test.js\"",
+    "test": "tap --disable-coverage \"test/**/*.test.js\"",
     "start": "fastify start -l info app.js -a 0.0.0.0 -p 4001",
     "dev": "fastify start -w -l info -P app.js -p 4001",
     "docker:build": "docker build --tag settings-api --file ./Dockerfile ../..",
@@ -26,14 +26,6 @@
     "fastify-plugin": "^5.0.1"
   },
   "devDependencies": {
-    "@istanbuljs/esm-loader-hook": "^0.3.0",
     "tap": "^21.0.2"
-  },
-  "tap": {
-    "node-arg": [
-      "--no-warnings",
-      "--experimental-loader",
-      "@istanbuljs/esm-loader-hook"
-    ]
   }
 }
